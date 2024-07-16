@@ -1,3 +1,4 @@
+import { AnswerPage } from './AnswerPage'
 @Entry
 @Component
 struct Index {
@@ -9,8 +10,8 @@ struct Index {
     Tabs() {
       //答题
       TabContent() {
-        Text('答题页面').fontSize(50).fontWeight(FontWeight.Bold)
-
+        // Text('答题页面').fontSize(50).fontWeight(FontWeight.Bold)
+        AnswerPage()
       }.tabBar(this.tabbarBuilder(0,'答题',$r('app.media.ic_practice'),$r('app.media.ic_practice_selected')))
 
 

@@ -19,6 +19,8 @@ export function createPost(post: {
 }
 
 //获取全部打卡列表
+//page 第几页
+//size 页容量
 export function getAllPost(page: number, size: number) {
   return instance.get('/word/post/getAll', { params: { page: page, size: size } })
 }
