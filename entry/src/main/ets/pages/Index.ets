@@ -1,9 +1,11 @@
 import { AnswerPage } from './AnswerPage'
+import { CirclePage } from './CirclePage'
+import { MinePage } from './MinePage'
 @Entry
 @Component
 struct Index {
   //用于存储当前访问标签页的索引
-  @State currentTabIndex:number = 0
+  @StorageLink('currentTabIndex') currentTabIndex:number = 0
 
   build() {
 
@@ -17,15 +19,15 @@ struct Index {
 
       //圈子
       TabContent() {
-        Text('圈子').fontSize(50).fontWeight(FontWeight.Bold)
-
-
+        // Text('圈子').fontSize(50).fontWeight(FontWeight.Bold)
+        CirclePage()
       }.tabBar(this.tabbarBuilder(1,'圈子',$r('app.media.ic_circle'),$r('app.media.ic_circle_selected')))
 
 
       //我的
       TabContent() {
-        Text('我的页面').fontSize(50).fontWeight(FontWeight.Bold)
+        // Text('我的页面').fontSize(50).fontWeight(FontWeight.Bold)
+        MinePage()
       }.tabBar(this.tabbarBuilder(2,'我的',$r('app.media.ic_mine'),$r('app.media.ic_mine_selected')))
 
     }

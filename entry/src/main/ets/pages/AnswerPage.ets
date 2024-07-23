@@ -1,8 +1,10 @@
 import promptAction from '@ohos.promptAction';
 import router from '@ohos.router';
+import emitter from '@ohos.events.emitter';
 import { AnswerStatus } from '../enums/AnswerStatus'
 import { OptionStatus } from '../enums/OptionStatus'
 import { PracticeStatus } from '../enums/PracticeStatus'
+import { createPost } from '../http/Api';
 import { getRandomQuestions, Question } from '../model/Question'
 import { convertMillisecondsToTime } from '../utils/DateUtil';
 @Entry
@@ -214,25 +216,18 @@ export struct AnswerPage {
       Row({ space: 50 }) {
         //结束测试按钮
         Button('结束测试').controlButtonStyle({
-          bg: Color.White,
-          border: Color.Gray,
-          font: Color.Gray
+          bg: Color.Transparent,
+          border: this.practiceStatus === PracticeStatus.Stopped ? Color.Gray : Color.Black,
+          font: this.practiceStatus === PracticeStatus.Stopped ? Color.Gray : Color.Black
         })
           .enabled(this.practiceStatus !== PracticeStatus.Stopped)
           .onClick(() => {
-            if (this.practiceStatus === PracticeStatus.Stopped) {
-              promptAction.showToast({
-                message: '请先开始测试'
-              })
-            }
-            else {
-              //切换状态
-              this.practiceStatus = PracticeStatus.Stopped
-
-              //停止计时器
-              this.timerController.pause()
-
-            }
+            //停止计时器
+            this.timerController.pause();
+            //切换练习状态
+            this.practiceStatus = PracticeStatus.Stopped
+            //打开弹窗
+            this.dialogController.open()
           })
 
 
@@ -273,7 +268,7 @@ export struct AnswerPage {
 
 //统计面板的子组件
 @Component
-struct StatItem {
+export struct StatItem {
   icon: Resource
   name: string
   fontColor: Color
@@ -401,7 +396,8 @@ struct ResultDialog {
     builder: ResultDialog
   })
 
-  @StorageProp('token') token:string = '';
+  //用于存储登录后的token字符串。可通过判断该字符串来判断是否登录
+  @StorageProp('token') token: string = ''
 
   //用于存储当前Tabs组件中访问的子页面的索引，方便登录后跳转到对应的子页面
   @StorageLink('currentTabIndex') currentTabIndex: number = 0
@@ -468,10 +464,18 @@ struct ResultDialog {
               this.resetPractice()
 
               if(this.token){
-                //如果已登录，进行打卡，打卡操作后续补充
-
-
-
+                //如果已登录，进行打卡，
+                // 发送打卡请求
+                await createPost({
+                  rightCount: this.rightCount,
+                  answeredCount: this.answeredCount,
+                  timeUsed: this.timeUsed
+                })
+                promptAction.showToast({ message: '打卡成功' })
+                // 通知,需要再页面最上方导入import emitter from '@ohos.events.emitter'
+                emitter.emit({ eventId: 1 })
+                // 打卡后跳转到打卡圈
+                this.currentTabIndex = 1
               }
               else {
                 // 如未登录，跳转到登录页面。注意，需在当前页面导入router模块

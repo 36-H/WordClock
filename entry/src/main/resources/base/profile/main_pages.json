@@ -2,6 +2,10 @@
   "src": [
     "pages/Index",
     "pages/AnswerPage",
-    "pages/SplashPage"
+    "pages/SplashPage",
+    "pages/CirclePage",
+    "pages/LoginPage",
+    "pages/MinePage",
+    "pages/PostHistoryPage"
   ]
 }

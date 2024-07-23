@@ -1,5 +1,11 @@
 import router from '@ohos.router';
 
+// 变量持久化
+PersistentStorage.PersistProp('token', '')
+
+//在AppStorage中创建一个currentTabIndex数据
+AppStorage.SetOrCreate('currentTabIndex', 0)
+
 @Entry
 @Component
 struct SplashPage {
